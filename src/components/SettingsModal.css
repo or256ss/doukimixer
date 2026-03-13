@@ -1,0 +1,161 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1a1e23;
+    padding: 25px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    color: #cdd3de;
+    border: 1px solid #3d4251;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #4ade80;
+    font-size: 1.2rem;
+}
+
+.save-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.save-form input {
+    flex: 1;
+    padding: 10px;
+    background: #23272f;
+    border: 1px solid #3d4251;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.save-form input:focus {
+    outline: none;
+    border-color: #4ade80;
+}
+
+.settings-list {
+    background: #15171c;
+    border: 1px solid #2a2d34;
+    border-radius: 6px;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.settings-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.settings-list li {
+    border-bottom: 1px solid #2a2d34;
+}
+
+.settings-list li:last-child {
+    border-bottom: none;
+}
+
+.no-settings {
+    text-align: center;
+    padding: 20px;
+    color: #6c7086;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.setting-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setting-item-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #cdd3de;
+    padding: 12px 15px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.delete-setting-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.2s, transform 0.1s;
+    opacity: 0.8;
+}
+
+.delete-setting-btn:hover {
+    background: #451a1a;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.setting-item-btn:hover {
+    background: #23272f;
+}
+
+.save-overwrite-btn {
+    cursor: copy;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.action-btn,
+.cancel-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.action-btn {
+    background: #4ade80;
+    color: #111;
+}
+
+.action-btn:hover {
+    background: #22c55e;
+}
+
+.cancel-btn {
+    background: #3d4251;
+    color: #fff;
+}
+
+.cancel-btn:hover {
+    background: #4b5263;
+}

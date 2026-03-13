@@ -1,0 +1,33 @@
+/* MTRLayout.css */
+/* Styles specific to the Layout components in App.jsx */
+
+.mtr-app {
+    display: flex;
+    flex-direction: column;
+}
+
+.mixer-panel {
+    /* Set to block level with horizontal scroll to prevent flex-items clipping off the left edge */
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    padding: 20px;
+    background: #1e2024;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin: 20px;
+}
+
+.tracks-container {
+    display: inline-flex;
+    gap: 10px;
+    vertical-align: top;
+}
+
+.master-container {
+    display: inline-flex;
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 2px solid #111;
+    vertical-align: top;
+}
