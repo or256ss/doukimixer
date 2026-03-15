@@ -130,7 +130,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('transport_play', () => {
-        const targetTime = Date.now() + 500;
+        // Increase target time padding to 1.0 second to ensure worst-case network pings 
+        // receive the message before the target expiration, ensuring perfect WebAudio scheduling.
+        const targetTime = Date.now() + 1000;
         if (socket.roomId) {
             io.to(socket.roomId).emit('sync_play', { targetTime });
         }
