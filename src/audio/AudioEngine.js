@@ -236,6 +236,29 @@ class AudioEngine {
     }
 
     /**
+     * Completely unloads all audio files and resets engine state to pristine default.
+     * Prevents cross-room ghost audio playing.
+     */
+    clearAllTracks() {
+        this.stop();
+        this.tracks.forEach(track => {
+            if (track.sourceNode) {
+                track.sourceNode.stop();
+                track.sourceNode.disconnect();
+                track.sourceNode = null;
+            }
+            track.buffer = null; // Free up memory
+            track.volume = 0.8;
+            track.pan = 0.0;
+            track.isMuted = false;
+            track.gainNode.gain.setValueAtTime(0.8, this.audioContext.currentTime);
+            track.pannerNode.pan.setValueAtTime(0.0, this.audioContext.currentTime);
+        });
+        this.masterGainNode.gain.setValueAtTime(0.8, this.audioContext.currentTime);
+        this.isPlaying = false;
+    }
+
+    /**
      * Seek to a specific time.
      */
     seek(time) {

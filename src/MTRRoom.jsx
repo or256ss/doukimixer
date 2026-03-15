@@ -54,6 +54,10 @@ export default function MTRRoom() {
 
   useEffect(() => {
     return () => {
+      // Free all loaded memory buffers and WebAudio nodes.
+      // If we don't do this, navigating out of the room retains the gigabytes of 
+      // floating memory, carrying "ghost tracks" into new rooms and crashing Safari.
+      audioEngine.clearAllTracks(); 
       if (socket) socket.disconnect();
     };
   }, [socket]);
