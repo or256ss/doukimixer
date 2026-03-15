@@ -132,7 +132,7 @@ export default function TrackStrip({
                 </button>
                 <input
                     type="file"
-                    accept="audio/*"
+                    accept=".mp3, .wav, .m4a, .aac, .ogg, audio/*"
                     ref={fileInputRef}
                     style={{ display: 'none' }}
                     onChange={handleFileChange}

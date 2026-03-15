@@ -1,8 +1,13 @@
+import unmute from 'unmute';
+
 class AudioEngine {
     constructor() {
         // Initialize Web Audio API context
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioContext = new AudioContext();
+
+        // Enable iOS/Android silent switch bypass for WebAudio Contexts
+        unmute(this.audioContext, true);
 
         this.tracks = [];
         this.numTracks = 8;
