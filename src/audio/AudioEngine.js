@@ -1,13 +1,11 @@
-import unmute from 'unmute';
-
 class AudioEngine {
     constructor() {
         // Initialize Web Audio API context
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioContext = new AudioContext();
 
-        // Enable iOS/Android silent switch bypass for WebAudio Contexts
-        unmute(this.audioContext, true);
+        // Enable iOS/Android silent switch bypass mechanism
+        this._setupMobileAudioUnlock();
 
         this.tracks = [];
         this.numTracks = 8;
@@ -45,6 +43,32 @@ class AudioEngine {
             gainNode.gain.value = 0.8;
             pannerNode.pan.value = 0.0;
         }
+    }
+
+    _setupMobileAudioUnlock() {
+        // Create an invisible audio element with a tiny silent MP3 data URI
+        const silentAudio = document.createElement('audio');
+        silentAudio.src = 'data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq';
+        silentAudio.preload = 'auto';
+
+        const unlockEvent = () => {
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+            // Play the silent HTML5 audio to break the hardware mute switch
+            const playPromise = silentAudio.play();
+            if (playPromise) {
+                playPromise.then(() => {
+                    window.removeEventListener('touchstart', unlockEvent);
+                    window.removeEventListener('click', unlockEvent);
+                }).catch(e => {
+                    // Ignore autoplay restrictions if prevented
+                });
+            }
+        };
+
+        window.addEventListener('touchstart', unlockEvent, { once: true });
+        window.addEventListener('click', unlockEvent, { once: true });
     }
 
     /**
