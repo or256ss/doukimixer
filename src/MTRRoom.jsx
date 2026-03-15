@@ -42,9 +42,17 @@ export default function MTRRoom() {
   const serverOffsetRef = useRef(0); // Offset to add to local Date.now() to get Server time
   const minRttRef = useRef(Infinity); // Track best RTT for NTP accuracy
   const pingIntervalRef = useRef(null);
+  const isInitiatedRef = useRef(false);
+
+  // Auto-login on mount
+  useEffect(() => {
+    if (!isInitiatedRef.current) {
+      isInitiatedRef.current = true;
+      handleLogin(); // Auto-login when the room page is accessed
+    }
+  }, []);
 
   useEffect(() => {
-    // We don't connect immediately until they hit "Login"
     return () => {
       if (socket) socket.disconnect();
     };
@@ -268,6 +276,10 @@ export default function MTRRoom() {
   };
 
   const handleLogout = () => {
+    // Stop any currently playing audio
+    audioEngine.stop();
+    setIsPlaying(false);
+
     if (socket) {
       socket.disconnect();
     }
