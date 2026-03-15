@@ -85,14 +85,15 @@ export default function MTRRoom() {
       
       // Update our clock offset ONLY if this RTT is better than our previous best.
       // High-latency pings are asymmetrical and ruin sync on cloud servers.
-      if (rtt < minRttRef.current || minRttRef.current === Infinity) {
+      if (rtt <= minRttRef.current) {
         minRttRef.current = rtt;
         const estimatedServerTime = data.serverTime + latency;
         serverOffsetRef.current = estimatedServerTime - now;
       }
       
-      // Slowly decay minRttRef so it can adjust to changing network conditions
-      minRttRef.current += 1;
+      // Removed minRttRef decay. The difference between the server and client hardware clock
+      // is physically static. Decaying this value allowed future, high-jitter asymmetric network 
+      // pings to falsely recalculate and corrupt the offset, ruining multi-playback sync.
     });
 
     newSocket.on('connect', () => {

@@ -184,7 +184,7 @@ class AudioEngine {
         // WebAudio API Golden Rule: To start multiple tracks simultaneously, they MUST 
         // be scheduled explicitly in the future. If scheduled at exactly `currentTime`, 
         // they are played instantly as JS evaluates them, causing sequential waterfall drift.
-        const safeFutureTime = this.audioContext.currentTime + 0.05; // 50ms engine padding
+        const safeFutureTime = this.audioContext.currentTime + 0.2; // 200ms engine padding
 
         // Use the network scheduled time if provided, but enforce the minimum safe future time
         const playAt = scheduledContextTime !== null 
