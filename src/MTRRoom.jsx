@@ -40,6 +40,7 @@ export default function MTRRoom() {
   const [currentUser, setCurrentUser] = useState(null); // e.g. 'User1'
   const [activeUsers, setActiveUsers] = useState([]); // [{id: 'User1'}, ...]
   const serverOffsetRef = useRef(0); // Offset to add to local Date.now() to get Server time
+  const minRttRef = useRef(Infinity); // Track best RTT for NTP accuracy
   const pingIntervalRef = useRef(null);
 
   useEffect(() => {
@@ -71,10 +72,19 @@ export default function MTRRoom() {
     newSocket.on('pong', (data) => {
       // Calculate Network Round Trip Time
       const now = Date.now();
-      const latency = (now - data.clientTime) / 2;
-      // Calculate offset: what do we add to local time to get server time?
-      const estimatedServerTime = data.serverTime + latency;
-      serverOffsetRef.current = estimatedServerTime - now;
+      const rtt = now - data.clientTime;
+      const latency = rtt / 2;
+      
+      // Update our clock offset ONLY if this RTT is better than our previous best.
+      // High-latency pings are asymmetrical and ruin sync on cloud servers.
+      if (rtt < minRttRef.current || minRttRef.current === Infinity) {
+        minRttRef.current = rtt;
+        const estimatedServerTime = data.serverTime + latency;
+        serverOffsetRef.current = estimatedServerTime - now;
+      }
+      
+      // Slowly decay minRttRef so it can adjust to changing network conditions
+      minRttRef.current += 1;
     });
 
     newSocket.on('connect', () => {
