@@ -104,10 +104,36 @@ class AudioEngine {
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const arrayBuffer = await response.arrayBuffer();
             const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
             this.tracks[trackIndex].buffer = audioBuffer;
+
+            // Late-Join Sync Engine:
+            // If the ensemble is already playing globally, and this track 
+            // just finished downloading late over a slow network, automatically snap it into 
+            // the exact correct temporal position in the active stream instead of staying silent.
+            if (this.isPlaying) {
+                const now = this.audioContext.currentTime;
+                // Determine if we caught up before the scheduled future start time
+                if (now < this.startTime) {
+                    const source = this.audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(this.tracks[trackIndex].pannerNode);
+                    source.start(this.startTime, this.pausedAt);
+                    this.tracks[trackIndex].sourceNode = source;
+                } else {
+                    // We are actually late. Calculate exactly how many seconds we missed.
+                    const timePassed = now - this.startTime + this.pausedAt;
+                    if (timePassed < audioBuffer.duration) {
+                        const source = this.audioContext.createBufferSource();
+                        source.buffer = audioBuffer;
+                        source.connect(this.tracks[trackIndex].pannerNode);
+                        source.start(now, timePassed);
+                        this.tracks[trackIndex].sourceNode = source;
+                    }
+                }
+            }
+
             return true;
         } catch (err) {
             console.error("Error loading audio from URL:", err);
