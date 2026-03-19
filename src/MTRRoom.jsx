@@ -433,6 +433,10 @@ export default function MTRRoom() {
 
   // Handlers for Transport
   const handlePlay = () => {
+    if (audioEngine.audioContext.state === 'suspended') {
+      audioEngine.audioContext.resume();
+    }
+    
     if (socket && currentUser) {
       socket.emit('transport_play');
     } else {
@@ -442,6 +446,10 @@ export default function MTRRoom() {
   };
 
   const handleStop = () => {
+    if (audioEngine.audioContext.state === 'suspended') {
+      audioEngine.audioContext.resume();
+    }
+    
     if (socket && currentUser) {
       socket.emit('transport_stop');
     } else {
@@ -451,6 +459,10 @@ export default function MTRRoom() {
   };
 
   const handleSeek = (time) => {
+    if (audioEngine.audioContext.state === 'suspended') {
+      audioEngine.audioContext.resume();
+    }
+    
     if (socket && currentUser) {
       socket.emit('transport_seek', { time });
     }
