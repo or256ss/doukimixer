@@ -108,7 +108,12 @@ export default function MTRRoom() {
     newSocket.on('login_success', (data) => {
       setCurrentUser(data.userId);
 
-      // Start pinging every 2 seconds to keep clock synced
+      // Fire an instantaneous ping immediately so we don't wait 2 seconds for the first time calibration
+      // If we wait 2 seconds, any play commands executed too early will use a raw offset of 0, 
+      // causing the target time calculator to mistake minor hardware clock drift as a massive future delay.
+      newSocket.emit('ping', Date.now());
+
+      // Start pinging every 2 seconds to keep clock synced continuously
       pingIntervalRef.current = setInterval(() => {
         newSocket.emit('ping', Date.now());
       }, 2000);
